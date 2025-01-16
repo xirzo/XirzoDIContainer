@@ -65,6 +65,17 @@ namespace XirzoDIContainer.Tests
 
 
         [Test]
+        public void Bind_SingletonBindToInterface_ReturnsSameInstance()
+        {
+            _container.Bind<IMock>(() => new Mock()).AsSingleton();
+
+            Result<IMock> resolveResult1 = _container.Resolve<IMock>();
+            Result<IMock> resolveResult2 = _container.Resolve<IMock>();
+
+            Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
+        }
+
+        [Test]
         public void Bind_Singleton_ReturnsSameInstance()
         {
             _container.Bind<Mock>(() => new Mock()).AsSingleton();
@@ -79,6 +90,30 @@ namespace XirzoDIContainer.Tests
         public void Bind_SingletonToInterface_ReturnsSameInstance()
         {
             _container.Bind<IMock, Mock>(() => new Mock()).AsSingleton();
+
+            Result<IMock> resolveResult1 = _container.Resolve<IMock>();
+            Result<IMock> resolveResult2 = _container.Resolve<IMock>();
+
+            Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
+        }
+
+
+        [Test]
+        public void Bind_SingletonWithoutSpecify_ReturnsSameInstance()
+        {
+            _container.Bind<Mock>(() => new Mock());
+
+            Result<Mock> resolveResult1 = _container.Resolve<Mock>();
+            Result<Mock> resolveResult2 = _container.Resolve<Mock>();
+
+            Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
+        }
+
+
+        [Test]
+        public void Bind_SingletonWithoutSpecifyToInterface_ReturnsSameInstance()
+        {
+            _container.Bind<IMock, Mock>(() => new Mock());
 
             Result<IMock> resolveResult1 = _container.Resolve<IMock>();
             Result<IMock> resolveResult2 = _container.Resolve<IMock>();
