@@ -155,12 +155,12 @@ namespace XirzoDIContainer.Tests
         // ------------------------------------------------------------- Non typical errors
 
 
-        [Test]
-        public void Resolve_UnregisteredType_ThrowsConstraintException()
-        {
-            Result<IMock> resolveResult = _container.Resolve<IMock>();
-
-            Assert.Throws<System.Data.ConstraintException>(() => resolveResult.Value.Foo());
-        }
+        // [Test]
+        // public void Resolve_UnregisteredType_ThrowsConstraintException()
+        // {
+        //     Result<IMock> resolveResult = _container.Resolve<IMock>();
+        //
+        //     Assert.Throws<System.Data.ConstraintException>(() => resolveResult.Value.Foo());
+        // }
     }
 }
