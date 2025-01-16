@@ -24,19 +24,34 @@ public class ContainerDi
             return ContainerErrors.RegistrationNotFound;
         }
 
-        if (registration.Instance is TInterface instance)
+        switch (registration.Scope)
         {
-            return instance;
+            case Scope.Singleton:
+            {
+                if (registration.Instance is TInterface instance)
+                {
+                    return instance;
+                }
+
+                if (registration.Factory is Func<object>)
+                {
+                    return (TInterface)registration.Factory();
+                }
+
+                break;
+            }
+
+            case Scope.Transient:
+            {
+                if (registration.Factory is Func<object>)
+                {
+                    return (TInterface)registration.Factory();
+                }
+
+                break;
+            }
         }
-
-        if (registration.Factory is Func<object> factory)
-        {
-            return (TInterface)registration.Factory();
-        }
-
-        Console.WriteLine(registration.Instance);
-        Console.WriteLine(registration.Factory);
-
+        
         return ContainerErrors.NoInstanceOrFactory;
     }
 }

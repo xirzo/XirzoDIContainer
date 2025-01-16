@@ -1,8 +1,7 @@
-﻿using System;
-using XirzoDIContainer.Container;
+﻿using XirzoDIContainer.Container;
 using XirzoResult;
 
-namespace XirzoDIContainer.Console
+namespace XirzoDIContainerConsole
 {
     internal class Program
     {
@@ -15,27 +14,23 @@ namespace XirzoDIContainer.Console
         {
             public void Print()
             {
-                System.Console.WriteLine("Hello, World!");
+                Console.WriteLine("Hello, World!");
             }
         }
 
-        private static void Main(string[] args)
+        private static void Main()
         {
-            ContainerDi container = new ContainerDi();
+            var _container = new ContainerDi();
 
-            container.Bind<Mock>()
-                .Factory(() => new Mock())
-                .AsSingleton();
+            // _container.Bind<IMock>()
+            //     .Factory(() => new Mock())
+            //     .AsSingleton();
 
-            Result<Mock> result = container.Resolve<Mock>();
+            Result<IMock> resolveResult1 = _container.Resolve<IMock>();
+            Console.WriteLine(resolveResult1.Value);
+            // Result<IMock> resolveResult2 = _container.Resolve<IMock>();
 
-            if (result.IsSuccess == false){
-                System.Console.WriteLine(result.Error);
-                return;
-            }
-
-            System.Console.WriteLine("Success!");
-            System.Console.WriteLine(result.Value);
+            // Console.WriteLine(resolveResult1.Value == resolveResult2.Value);
         }
     }
 }

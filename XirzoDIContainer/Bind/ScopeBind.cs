@@ -25,6 +25,11 @@ public class ScopeBind<T> where T : notnull
         _register = register;
         _instance = instance;
         _factory = factory;
+
+        if (_factory != null)
+        {
+            _instance = _factory();
+        }
     }
     public void AsSingleton()
     {
