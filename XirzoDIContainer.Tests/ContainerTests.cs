@@ -28,7 +28,9 @@ namespace XirzoDIContainer.Tests
         public void Bind_SingleInstance_ReturnsSameInstance()
         {
             var instance = new Mock();
-            _container.Bind<Mock>(instance);
+
+            _container.Bind<Mock>()
+                .Instance(instance);
 
             Result<Mock> resolveResult = _container.Resolve<Mock>();
 
@@ -39,7 +41,9 @@ namespace XirzoDIContainer.Tests
         public void Bind_SingleInstanceToInterface_ReturnsSameInstance()
         {
             var instance = new Mock();
-            _container.Bind<IMock>(instance);
+
+            _container.Bind<IMock>()
+                .Instance(instance);
 
             Result<IMock> resolveResult = _container.Resolve<IMock>();
 
@@ -52,8 +56,11 @@ namespace XirzoDIContainer.Tests
             var instance1 = new Mock();
             var instance2 = new Mock();
 
-            _container.Bind<IMock>(instance1);
-            _container.Bind<IMock>(instance2);
+            _container.Bind<IMock>()
+                .Instance(instance1);
+
+            _container.Bind<IMock>()
+                .Instance(instance2);
 
             Result<IMock> resolveResult = _container.Resolve<IMock>();
 
@@ -67,7 +74,9 @@ namespace XirzoDIContainer.Tests
         [Test]
         public void Bind_SingletonBindToInterface_ReturnsSameInstance()
         {
-            _container.Bind<IMock>(() => new Mock()).AsSingleton();
+            _container.Bind<IMock>()
+                .Factory(() => new Mock())
+                .AsSingleton();
 
             Result<IMock> resolveResult1 = _container.Resolve<IMock>();
             Result<IMock> resolveResult2 = _container.Resolve<IMock>();
@@ -78,7 +87,9 @@ namespace XirzoDIContainer.Tests
         [Test]
         public void Bind_Singleton_ReturnsSameInstance()
         {
-            _container.Bind<Mock>(() => new Mock()).AsSingleton();
+            _container.Bind<Mock>()
+                .Factory(() => new Mock())
+                .AsSingleton();
 
             Result<Mock> resolveResult1 = _container.Resolve<Mock>();
             Result<Mock> resolveResult2 = _container.Resolve<Mock>();
@@ -89,7 +100,9 @@ namespace XirzoDIContainer.Tests
         [Test]
         public void Bind_SingletonToInterface_ReturnsSameInstance()
         {
-            _container.Bind<IMock, Mock>(() => new Mock()).AsSingleton();
+            _container.Bind<IMock>()
+                .Factory(() => new Mock())
+                .AsSingleton();
 
             Result<IMock> resolveResult1 = _container.Resolve<IMock>();
             Result<IMock> resolveResult2 = _container.Resolve<IMock>();
@@ -99,24 +112,14 @@ namespace XirzoDIContainer.Tests
 
 
         [Test]
-        public void Bind_SingletonWithoutSpecify_ReturnsSameInstance()
+        public void Bind_SingletonToClass_ReturnsSameInstance()
         {
-            _container.Bind<Mock>(() => new Mock());
+            _container.Bind<Mock>()
+                .Factory(() => new Mock())
+                .AsSingleton();
 
             Result<Mock> resolveResult1 = _container.Resolve<Mock>();
             Result<Mock> resolveResult2 = _container.Resolve<Mock>();
-
-            Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
-        }
-
-
-        [Test]
-        public void Bind_SingletonWithoutSpecifyToInterface_ReturnsSameInstance()
-        {
-            _container.Bind<IMock, Mock>(() => new Mock());
-
-            Result<IMock> resolveResult1 = _container.Resolve<IMock>();
-            Result<IMock> resolveResult2 = _container.Resolve<IMock>();
 
             Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
         }
@@ -127,7 +130,9 @@ namespace XirzoDIContainer.Tests
         [Test]
         public void Bind_Transient_ReturnsDifferentInstances()
         {
-            _container.Bind<Mock>(() => new Mock()).AsTransient();
+            _container.Bind<Mock>()
+                .Factory(() => new Mock())
+                .AsTransient();
 
             Result<Mock> resolveResult1 = _container.Resolve<Mock>();
             Result<Mock> resolveResult2 = _container.Resolve<Mock>();
@@ -138,7 +143,9 @@ namespace XirzoDIContainer.Tests
         [Test]
         public void Bind_TransientToInterface_ReturnsDifferentInstances()
         {
-            _container.Bind<IMock, Mock>(() => new Mock()).AsTransient();
+            _container.Bind<Mock>()
+                .Factory(() => new IMock())
+                .AsTransient();
 
             Result<IMock> resolveResult1 = _container.Resolve<IMock>();
             Result<IMock> resolveResult2 = _container.Resolve<IMock>();
