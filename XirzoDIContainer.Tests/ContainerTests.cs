@@ -5,10 +5,14 @@ namespace XirzoDIContainer.Tests
 {
     internal interface IMock
     {
+        void Foo();
     }
 
     internal class Mock : IMock
     {
+        public void Foo()
+        {
+        }
     }
 
     [TestFixture]
@@ -30,7 +34,7 @@ namespace XirzoDIContainer.Tests
             var instance = new Mock();
 
             _container.Bind<Mock>()
-                .Instance(instance);
+                .Instance(instance).AsSingleton();
 
             Result<Mock> resolveResult = _container.Resolve<Mock>();
 
@@ -43,7 +47,7 @@ namespace XirzoDIContainer.Tests
             var instance = new Mock();
 
             _container.Bind<IMock>()
-                .Instance(instance);
+                .Instance(instance).AsSingleton();
 
             Result<IMock> resolveResult = _container.Resolve<IMock>();
 
@@ -57,15 +61,9 @@ namespace XirzoDIContainer.Tests
             var instance2 = new Mock();
 
             _container.Bind<IMock>()
-                .Instance(instance1);
+                .Instance(instance1).AsSingleton();
 
-            _container.Bind<IMock>()
-                .Instance(instance2);
-
-            Result<IMock> resolveResult = _container.Resolve<IMock>();
-
-            Assert.That(resolveResult.Error, Does.Contain("Mock"),
-                "Error should mention the type that couldn't be resolved");
+            Assert.Throws<ArgumentException>(() => _container.Bind<IMock>().Instance(instance2).AsSingleton());
         }
 
         // ------------------------------------------------------------- Singleton without instance
@@ -158,12 +156,11 @@ namespace XirzoDIContainer.Tests
 
 
         [Test]
-        public void Resolve_UnregisteredType_ReturnsMeaningfulError()
+        public void Resolve_UnregisteredType_ThrowsConstraintException()
         {
             Result<IMock> resolveResult = _container.Resolve<IMock>();
 
-            Assert.That(resolveResult.Error, Does.Contain("IMock"),
-                "Error should mention the type that couldn't be resolved");
+            Assert.Throws<System.Data.ConstraintException>(() => resolveResult.Value.Foo());
         }
     }
 }
