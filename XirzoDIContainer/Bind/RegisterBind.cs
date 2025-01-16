@@ -4,7 +4,7 @@ namespace XirzoDIContainer.Bind;
 
 public class RegisterBind<TInterface> where TInterface : notnull
 {
-    private Action<Type, Registration> _register;
+    private readonly Action<Type, Registration> _register;
 
     public RegisterBind(Action<Type, Registration> register)
     {
@@ -20,10 +20,10 @@ public class RegisterBind<TInterface> where TInterface : notnull
     {
         Func<object> objectFactory = () =>
         {
-            var result = factory();
-            return result;
+            TConcrete val = factory();
+            return (object)val;
         };
-
-        return new ScopeBind<TInterface>(_register, objectFactory);
+        
+        return new ScopeBind<TInterface>(_register, null, objectFactory);
     }
 }

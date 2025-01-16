@@ -10,29 +10,30 @@ public class ScopeBind<T> where T : notnull
     private readonly object? _instance;
     private readonly Func<object>? _factory;
 
-
     internal ScopeBind(Action<Type, Registration> register, object? instance, Func<object>? factory = null)
     {
+        if (instance == null && factory == null)
+        {
+            throw new ConstraintException("Both instance and factory are null");
+        }
+        
+        if (instance != null && factory != null)
+        {
+            throw new ConstraintException("Both instance and factory are not null");
+        }
+        
         _register = register;
         _instance = instance;
         _factory = factory;
     }
-
-    public Scope Scope { get; private set; } = Scope.Singleton;
-
     public void AsSingleton()
     {
-        if (_instance == null)
-        {
-            throw new ConstraintException("AsSingleton mustn`t be used if instance is null");
-        }
-
         var registration = new Registration(
+            Scope.Singleton,
             typeof(T),
-            _instance as Type,
+            typeof(T),
             _instance,
-            _factory,
-            Scope.Singleton
+            _factory
         );
 
         _register(typeof(T), registration);
@@ -40,18 +41,12 @@ public class ScopeBind<T> where T : notnull
 
     public void AsTransient()
     {
-
-        if (_factory == null)
-        {
-            throw new ConstraintException("AsTransient mustn`t be used if factory is null");
-        }
-
         var registration = new Registration(
+            Scope.Transient,
             typeof(T),
             typeof(T),
             _instance,
-            _factory,
-            Scope.Transient
+            _factory
         );
 
         _register(typeof(T), registration);

@@ -5,12 +5,7 @@ namespace XirzoDIContainer.Container;
 
 public class ContainerDi
 {
-    private readonly Dictionary<Type, Registration> _registrations;
-
-    public ContainerDi()
-    {
-        _registrations = new();
-    }
+    private readonly Dictionary<Type, Registration> _registrations = new();
 
     public RegisterBind<TInterface> Bind<TInterface>() where TInterface : notnull
     {
@@ -24,7 +19,7 @@ public class ContainerDi
 
     public Result<TInterface> Resolve<TInterface>()
     {
-        if (_registrations.TryGetValue(typeof(TInterface), out Registration? registration) == false)
+        if (_registrations.TryGetValue(typeof(TInterface), out var registration) == false)
         {
             return ContainerErrors.RegistrationNotFound;
         }
