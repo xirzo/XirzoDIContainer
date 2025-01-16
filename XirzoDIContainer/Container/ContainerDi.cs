@@ -1,4 +1,5 @@
-﻿namespace XirzoDIContainer.Container;
+﻿
+namespace XirzoDIContainer.Container;
 
 public class ContainerDi
 {
