@@ -16,14 +16,4 @@ public class Registration
         Factory = factory;
         Scope = scope;
     }
-
-    public void AsSingleton()
-    {
-        Scope = Scope.Singleton;
-    }
-
-    public void AsTransient()
-    {
-        Scope = Scope.Transient;
-    }
 }

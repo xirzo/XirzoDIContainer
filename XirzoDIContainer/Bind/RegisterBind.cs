@@ -1,14 +1,29 @@
+using XirzoDIContainer.Container;
+
 namespace XirzoDIContainer.Bind;
 
-public class RegisterBind<T> where T : notnull
+public class RegisterBind<TInterface> where TInterface : notnull
 {
-    public ScopeBind<T> Instance<TConcrete>() where TConcrete : T
+    private Action<Type, Registration> _register;
+
+    public RegisterBind(Action<Type, Registration> register)
     {
-        throw new NotImplementedException();
+        _register = register;
     }
 
-    public ScopeBind<T> Factory<TConcrete>() where TConcrete : T
+    public ScopeBind<TInterface> Instance<TConcrete>(TConcrete instance) where TConcrete : TInterface
     {
-        throw new NotImplementedException();
+        return new ScopeBind<TInterface>(_register, instance);
+    }
+
+    public ScopeBind<TInterface> Factory<TConcrete>(Func<TConcrete> factory) where TConcrete : TInterface
+    {
+        Func<object> objectFactory = () =>
+        {
+            var result = factory();
+            return result;
+        };
+
+        return new ScopeBind<TInterface>(_register, objectFactory);
     }
 }
