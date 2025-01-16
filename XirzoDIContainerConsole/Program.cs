@@ -23,9 +23,19 @@ namespace XirzoDIContainer.Console
         {
             ContainerDi container = new ContainerDi();
 
-            container.Bind<Mock>(() => new Mock()).AsSingleton();
+            container.Bind<Mock>()
+                .Factory(() => new Mock())
+                .AsSingleton();
 
             Result<Mock> result = container.Resolve<Mock>();
+
+            if (result.IsSuccess == false){
+                System.Console.WriteLine(result.Error);
+                return;
+            }
+
+            System.Console.WriteLine("Success!");
+            System.Console.WriteLine(result.Value);
         }
     }
 }
