@@ -143,8 +143,8 @@ namespace XirzoDIContainer.Tests
         [Test]
         public void Bind_TransientToInterface_ReturnsDifferentInstances()
         {
-            _container.Bind<Mock>()
-                .Factory(() => new IMock())
+            _container.Bind<IMock>()
+                .Factory(() => new Mock())
                 .AsTransient();
 
             Result<IMock> resolveResult1 = _container.Resolve<IMock>();
