@@ -1,4 +1,5 @@
 ﻿using XirzoDIContainer.Bind;
+using XirzoDIContainer.Installer;
 using XirzoResult;
 
 namespace XirzoDIContainer.Container;
@@ -6,6 +7,12 @@ namespace XirzoDIContainer.Container;
 public class ContainerDi
 {
     private readonly Dictionary<Type, Registration> _registrations = new();
+    // private readonly List<IInstaller> _installers = new();
+    //
+    // public void Add(IInstaller installer)
+    // {
+    //     _installers.Add(installer);
+    // }
 
     public RegisterBind<TInterface> Bind<TInterface>() where TInterface : notnull
     {

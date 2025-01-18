@@ -20,16 +20,13 @@ namespace XirzoDIContainer.Console
 
         private static void Main()
         {
-            var _container = new ContainerDi();
+            var container = new ContainerDi();
 
-            var instance = new ConsoleLogger();
+            var installer = new LoggerInstaller(container);
+            installer.Bind();
 
-            _container.Bind<ILogger>()
-                .Instance(instance);
-
-            Result<ILogger> result = _container.Resolve<ILogger>();
-            
-            System.Console.WriteLine(result.Value);
+            var game = new Game(container);
+            game.Run();
         }
     }
 }
