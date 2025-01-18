@@ -7,12 +7,12 @@ namespace XirzoDIContainer.Container;
 public class ContainerDi
 {
     private readonly Dictionary<Type, Registration> _registrations = new();
-    // private readonly List<IInstaller> _installers = new();
-    //
-    // public void Add(IInstaller installer)
-    // {
-    //     _installers.Add(installer);
-    // }
+    private readonly List<IInstaller> _installers = new();
+    
+    public void Add(IInstaller installer)
+    {
+        installer.Bind(this);
+    }
 
     public RegisterBind<TInterface> Bind<TInterface>() where TInterface : notnull
     {

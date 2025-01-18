@@ -1,18 +1,12 @@
 using XirzoDIContainer.Container;
+using XirzoDIContainer.Installer;
 
 namespace XirzoDIContainer.Console;
 
-public class LoggerInstaller
+public class LoggerInstaller : IInstaller
 {
-    private readonly ContainerDi _container;
-
-    public LoggerInstaller(ContainerDi container)
+    public void Bind(ContainerDi container)
     {
-        _container = container;
-    }
-
-    public void Bind()
-    {
-        _container.Bind<ILogger>().Factory(() => new Logger()).AsSingleton();
+        container.Bind<ILogger>().Factory(() => new Logger()).AsSingleton();
     }
 }
