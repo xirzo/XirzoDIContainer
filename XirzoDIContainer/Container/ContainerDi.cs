@@ -33,7 +33,7 @@ public class ContainerDi
                     return instance;
                 }
 
-                if (registration.Factory is Func<object>)
+                if (registration.Factory is not null)
                 {
                     return (TInterface)registration.Factory();
                 }
@@ -43,7 +43,7 @@ public class ContainerDi
 
             case Scope.Transient:
             {
-                if (registration.Factory is Func<object>)
+                if (registration.Factory is not null)
                 {
                     return (TInterface)registration.Factory();
                 }

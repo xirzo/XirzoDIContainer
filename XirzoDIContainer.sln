@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XirzoDIContainer.Tests", "X
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XirzoDIContainer", "XirzoDIContainer\XirzoDIContainer.csproj", "{BFECCC4D-877A-467C-834F-A34E7BBB38E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XirzoDIContainerConsole", "XirzoDIContainerConsole\XirzoDIContainerConsole.csproj", "{A7083199-7CB0-4BB1-A1DF-C0BE3FD332D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XirzoDIContainer.Console", "XirzoDIContainer.Console\XirzoDIContainer.Console.csproj", "{A7083199-7CB0-4BB1-A1DF-C0BE3FD332D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
