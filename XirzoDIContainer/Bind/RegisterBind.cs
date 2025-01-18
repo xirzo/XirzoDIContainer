@@ -11,9 +11,17 @@ public class RegisterBind<TInterface> where TInterface : notnull
         _register = register;
     }
 
-    public ScopeBind<TInterface> Instance<TConcrete>(TConcrete instance) where TConcrete : TInterface
+    public void Instance<TConcrete>(TConcrete instance) where TConcrete : TInterface
     {
-        return new ScopeBind<TInterface>(_register, instance);
+        var registration = new Registration(
+            Scope.Singleton,
+            typeof(TInterface),
+            typeof(TInterface),
+            instance,
+            null
+        );
+
+        _register(typeof(TInterface), registration);
     }
 
     public ScopeBind<TInterface> Factory<TConcrete>(Func<TConcrete> factory) where TConcrete : TInterface

@@ -34,7 +34,7 @@ namespace XirzoDIContainer.Tests
             var instance = new Mock();
 
             _container.Bind<Mock>()
-                .Instance(instance).AsSingleton();
+                .Instance(instance);
 
             Result<Mock> resolveResult = _container.Resolve<Mock>();
 
@@ -47,7 +47,7 @@ namespace XirzoDIContainer.Tests
             var instance = new Mock();
 
             _container.Bind<IMock>()
-                .Instance(instance).AsSingleton();
+                .Instance(instance);
 
             Result<IMock> resolveResult = _container.Resolve<IMock>();
 
@@ -61,9 +61,9 @@ namespace XirzoDIContainer.Tests
             var instance2 = new Mock();
 
             _container.Bind<IMock>()
-                .Instance(instance1).AsSingleton();
+                .Instance(instance1);
 
-            Assert.Throws<ArgumentException>(() => _container.Bind<IMock>().Instance(instance2).AsSingleton());
+            Assert.Throws<ArgumentException>(() => _container.Bind<IMock>().Instance(instance2));
         }
 
         // ------------------------------------------------------------- Singleton without instance
