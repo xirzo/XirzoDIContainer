@@ -3,19 +3,21 @@ using XirzoDIContainer.Container;
 
 namespace XirzoDIContainer.Bind;
 
-public class ScopeBind<T> where T : notnull
+public class ScopeBind<TInterface> where TInterface : notnull
 {
     private readonly Action<Type, Registration> _register;
     private readonly object? _instance;
     private readonly Func<object>? _factory;
     private readonly ContainerDi _container;
+    private readonly Type? _concreteType;
 
-    internal ScopeBind(Action<Type, Registration> register, object? instance, ContainerDi container, Func<object>? factory = null)
+    internal ScopeBind(Action<Type, Registration> register, object? instance, ContainerDi container, Func<object>? factory, Type? concreteType = null)
     {
         _register = register;
         _instance = instance;
         _container = container;
         _factory = factory;
+        _concreteType = concreteType;
 
         if (instance == null && factory == null)
         {
@@ -36,7 +38,7 @@ public class ScopeBind<T> where T : notnull
     {
         return () =>
         {
-            var type = typeof(T);
+            var type = _concreteType ?? typeof(TInterface);
             var constructors = type.GetConstructors();
 
             var constructor = constructors.OrderByDescending(c => c.GetParameters().Length).FirstOrDefault()
@@ -74,25 +76,25 @@ public class ScopeBind<T> where T : notnull
     {
         var registration = new Registration(
             Scope.Singleton,
-            typeof(T),
-            typeof(T),
+            typeof(TInterface),
+            typeof(TInterface),
             _instance,
             _factory
         );
 
-        _register(typeof(T), registration);
+        _register(typeof(TInterface), registration);
     }
 
     public void AsTransient()
     {
         var registration = new Registration(
             Scope.Transient,
-            typeof(T),
-            typeof(T),
+            typeof(TInterface),
+            typeof(TInterface),
             _instance,
             _factory
         );
 
-        _register(typeof(T), registration);
+        _register(typeof(TInterface), registration);
     }
 }

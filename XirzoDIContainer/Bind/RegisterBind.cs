@@ -15,7 +15,7 @@ public class RegisterBind<TInterface> where TInterface : notnull
 
     public ScopeBind<TInterface> To<TConcrete>() where TConcrete : TInterface
     {
-        return new ScopeBind<TInterface>(_register, null, _container, null);
+        return new ScopeBind<TInterface>(_register, null, _container, null, typeof(TConcrete));
     }
 
     public void ToInstance<TConcrete>(TConcrete instance) where TConcrete : TInterface
