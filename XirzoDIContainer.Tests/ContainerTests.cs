@@ -1,5 +1,4 @@
 ﻿using XirzoDIContainer.Container;
-using XirzoResult;
 
 namespace XirzoDIContainer.Tests
 {
@@ -26,7 +25,61 @@ namespace XirzoDIContainer.Tests
             _container = new ContainerDi();
         }
 
-        // ------------------------------------------------------------- Singleton with instance
+
+        // ------------------------------------------------------------- Default
+
+        [Test]
+        public void Bind_ClassAsSingleton_ReturnsSameInstance()
+        {
+            _container.Bind<Mock>()
+                .AsSingleton();
+
+            Mock result1 = _container.Resolve<Mock>();
+            Mock result2 = _container.Resolve<Mock>();
+
+            Assert.That(result1, Is.EqualTo(result2), "Resolved instances should match each other");
+        }
+
+
+        [Test]
+        public void Bind_ClassAsTransient_ReturnsSameInstance()
+        {
+            _container.Bind<Mock>()
+                .AsTransient();
+
+            Mock result1 = _container.Resolve<Mock>();
+            Mock result2 = _container.Resolve<Mock>();
+
+            Assert.That(result1, Is.Not.EqualTo(result2), "Resolved instances should not match each other");
+        }
+
+        [Test]
+        public void Bind_InterfaceToClassAsSingleton_ReturnsSameInstance()
+        {
+            _container.Bind<IMock>()
+                .To<Mock>()
+                .AsSingleton();
+
+            IMock result1 = _container.Resolve<IMock>();
+            IMock result2 = _container.Resolve<IMock>();
+
+            Assert.That(result1, Is.EqualTo(result2), "Resolved instances should match each other");
+        }
+
+        [Test]
+        public void Bind_InterfaceToClassAsTransient_ReturnsDifferentInstances()
+        {
+            _container.Bind<IMock>()
+                .To<Mock>()
+                .AsSingleton();
+
+            IMock result1 = _container.Resolve<IMock>();
+            IMock result2 = _container.Resolve<IMock>();
+
+            Assert.That(result1, Is.Not.EqualTo(result2), "Resolved instances should not match");
+        }
+
+        // ------------------------------------------------------------- Instance
 
         [Test]
         public void Bind_SingleInstance_ReturnsSameInstance()
@@ -34,11 +87,11 @@ namespace XirzoDIContainer.Tests
             var instance = new Mock();
 
             _container.Bind<Mock>()
-                .Instance(instance);
+                .ToInstance(instance);
 
-            Result<Mock> resolveResult = _container.Resolve<Mock>();
+            Mock result = _container.Resolve<Mock>();
 
-            Assert.That(resolveResult.Value, Is.EqualTo(instance), "Resolved instance should match original instance");
+            Assert.That(result, Is.EqualTo(instance), "Resolved instance should match original instance");
         }
 
         [Test]
@@ -47,11 +100,11 @@ namespace XirzoDIContainer.Tests
             var instance = new Mock();
 
             _container.Bind<IMock>()
-                .Instance(instance);
+                .ToInstance(instance);
 
-            Result<IMock> resolveResult = _container.Resolve<IMock>();
+            IMock result = _container.Resolve<IMock>();
 
-            Assert.That(resolveResult.Value, Is.EqualTo(instance), "Resolved instance should match original instance");
+            Assert.That(result, Is.EqualTo(instance), "Resolved instance should match original instance");
         }
 
         [Test]
@@ -61,96 +114,37 @@ namespace XirzoDIContainer.Tests
             var instance2 = new Mock();
 
             _container.Bind<IMock>()
-                .Instance(instance1);
+                .ToInstance(instance1);
 
-            Assert.Throws<ArgumentException>(() => _container.Bind<IMock>().Instance(instance2));
+            Assert.Throws<ArgumentException>(() => _container.Bind<IMock>().ToInstance(instance2));
         }
 
-        // ------------------------------------------------------------- Singleton without instance
+        // ------------------------------------------------------------- Factory
 
 
         [Test]
-        public void Bind_SingletonBindToInterface_ReturnsSameInstance()
+        public void Bind_FactoryBindToInterface_ReturnsDifferentInstances()
         {
             _container.Bind<IMock>()
-                .Factory(() => new Mock())
-                .AsSingleton();
+                .ToFactory(() => new Mock());
 
-            Result<IMock> resolveResult1 = _container.Resolve<IMock>();
-            Result<IMock> resolveResult2 = _container.Resolve<IMock>();
+            IMock result1 = _container.Resolve<IMock>();
+            IMock result2 = _container.Resolve<IMock>();
 
-            Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
+            Assert.That(result1, Is.Not.EqualTo(result2), "Resolved instance should not match each other");
         }
 
         [Test]
-        public void Bind_Singleton_ReturnsSameInstance()
+        public void Bind_ClassToFactory_ReturnsDiffrentInstances()
         {
             _container.Bind<Mock>()
-                .Factory(() => new Mock())
-                .AsSingleton();
+                .ToFactory(() => new Mock());
 
-            Result<Mock> resolveResult1 = _container.Resolve<Mock>();
-            Result<Mock> resolveResult2 = _container.Resolve<Mock>();
+            Mock result1 = _container.Resolve<Mock>();
+            Mock result2 = _container.Resolve<Mock>();
 
-            Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
+            Assert.That(result1, Is.Not.EqualTo(result2), "Resolved instance should not match each other");
         }
-
-        [Test]
-        public void Bind_SingletonToInterface_ReturnsSameInstance()
-        {
-            _container.Bind<IMock>()
-                .Factory(() => new Mock())
-                .AsSingleton();
-
-            Result<IMock> resolveResult1 = _container.Resolve<IMock>();
-            Result<IMock> resolveResult2 = _container.Resolve<IMock>();
-
-            Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
-        }
-
-
-        [Test]
-        public void Bind_SingletonToClass_ReturnsSameInstance()
-        {
-            _container.Bind<Mock>()
-                .Factory(() => new Mock())
-                .AsSingleton();
-
-            Result<Mock> resolveResult1 = _container.Resolve<Mock>();
-            Result<Mock> resolveResult2 = _container.Resolve<Mock>();
-
-            Assert.That(resolveResult1.Value, Is.EqualTo(resolveResult2.Value), "Resolved instance should match each other");
-        }
-
-
-        // ------------------------------------------------------------- Transient
-
-        [Test]
-        public void Bind_Transient_ReturnsDifferentInstances()
-        {
-            _container.Bind<Mock>()
-                .Factory(() => new Mock())
-                .AsTransient();
-
-            Result<Mock> resolveResult1 = _container.Resolve<Mock>();
-            Result<Mock> resolveResult2 = _container.Resolve<Mock>();
-
-            Assert.That(resolveResult1.Value, Is.Not.EqualTo(resolveResult2.Value), "Resolved instance should not match each other");
-        }
-
-        [Test]
-        public void Bind_TransientToInterface_ReturnsDifferentInstances()
-        {
-            _container.Bind<IMock>()
-                .Factory(() => new Mock())
-                .AsTransient();
-
-            Result<IMock> resolveResult1 = _container.Resolve<IMock>();
-            Result<IMock> resolveResult2 = _container.Resolve<IMock>();
-
-            Assert.That(resolveResult1.Value, Is.Not.EqualTo(resolveResult2.Value), "Resolved instance should not match each other");
-        }
-
 
         // ------------------------------------------------------------- Non typical errors
 
@@ -158,9 +152,9 @@ namespace XirzoDIContainer.Tests
         // [Test]
         // public void Resolve_UnregisteredType_ThrowsConstraintException()
         // {
-        //     Result<IMock> resolveResult = _container.Resolve<IMock>();
+        //     Result<IMock> result = _container.Resolve<IMock>();
         //
-        //     Assert.Throws<System.Data.ConstraintException>(() => resolveResult.Value.Foo());
+        //     Assert.Throws<System.Data.ConstraintException>(() => result.Value.Foo());
         // }
     }
 }
