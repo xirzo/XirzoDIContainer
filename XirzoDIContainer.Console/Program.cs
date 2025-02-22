@@ -39,7 +39,7 @@ namespace XirzoDIContainer.Console
             container.Bind<ILogger>()
                 .ToFactory(() => new Logger());
 
-            container.Bind<Game>().AsSingleton();
+            container.BindType<Game>().AsSingleton();
 
             var game = container.Resolve<Game>();
 
