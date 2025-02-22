@@ -31,7 +31,7 @@ namespace XirzoDIContainer.Tests
         [Test]
         public void Bind_ClassAsSingleton_ReturnsSameInstance()
         {
-            _container.Bind<Mock>()
+            _container.BindType<Mock>()
                 .AsSingleton();
 
             Mock result1 = _container.Resolve<Mock>();
@@ -44,7 +44,7 @@ namespace XirzoDIContainer.Tests
         [Test]
         public void Bind_ClassAsTransient_ReturnsSameInstance()
         {
-            _container.Bind<Mock>()
+            _container.BindType<Mock>()
                 .AsTransient();
 
             Mock result1 = _container.Resolve<Mock>();
@@ -71,7 +71,7 @@ namespace XirzoDIContainer.Tests
         {
             _container.Bind<IMock>()
                 .To<Mock>()
-                .AsSingleton();
+                .AsTransient();
 
             IMock result1 = _container.Resolve<IMock>();
             IMock result2 = _container.Resolve<IMock>();
