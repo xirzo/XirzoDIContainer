@@ -1,18 +1,10 @@
 ﻿using XirzoDIContainer.Bind;
-using XirzoDIContainer.Installer;
-using XirzoResult;
 
 namespace XirzoDIContainer.Container;
 
 public class ContainerDi
 {
     private readonly Dictionary<Type, Registration> _registrations = new();
-    private readonly List<IInstaller> _installers = new();
-    
-    public void Add(IInstaller installer)
-    {
-        installer.Bind(this);
-    }
 
     public RegisterBind<TInterface> Bind<TInterface>() where TInterface : notnull
     {
@@ -24,41 +16,41 @@ public class ContainerDi
         return new RegisterBind<TInterface>(register);
     }
 
-    public Result<TInterface> Resolve<TInterface>()
+    public TInterface Resolve<TInterface>()
     {
         if (_registrations.TryGetValue(typeof(TInterface), out var registration) == false)
         {
-            return ContainerErrors.RegistrationNotFound;
+            throw new InvalidOperationException($"{typeof(TInterface)} has not been registered.");
         }
 
         switch (registration.Scope)
         {
             case Scope.Singleton:
-            {
-                if (registration.Instance is TInterface instance)
                 {
-                    return instance;
-                }
+                    if (registration.Instance is TInterface instance)
+                    {
+                        return instance;
+                    }
 
-                if (registration.Factory is not null)
-                {
-                    return (TInterface)registration.Factory();
-                }
+                    if (registration.Factory is not null)
+                    {
+                        return (TInterface)registration.Factory();
+                    }
 
-                break;
-            }
+                    break;
+                }
 
             case Scope.Transient:
-            {
-                if (registration.Factory is not null)
                 {
-                    return (TInterface)registration.Factory();
-                }
+                    if (registration.Factory is not null)
+                    {
+                        return (TInterface)registration.Factory();
+                    }
 
-                break;
-            }
+                    break;
+                }
         }
-        
-        return ContainerErrors.NoInstanceOrFactory;
+
+        throw new InvalidOperationException($"No instance or factory available for type {typeof(TInterface).FullName}. Registration scope: {registration.Scope}");
     }
 }

@@ -11,10 +11,4 @@
     <ItemGroup>
       <ProjectReference Include="..\XirzoDIContainer\XirzoDIContainer.csproj" />
     </ItemGroup>
-
-
-    <ItemGroup>
-      <PackageReference Include="XirzoResult" Version="1.0.3" />
-    </ItemGroup>
-
 </Project>
