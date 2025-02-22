@@ -16,7 +16,7 @@ public class RegisterBind<TInterface> where TInterface : notnull
         var registration = new Registration(
             Scope.Singleton,
             typeof(TInterface),
-            typeof(TInterface),
+            typeof(TConcrete),
             instance,
             null
         );
@@ -24,7 +24,7 @@ public class RegisterBind<TInterface> where TInterface : notnull
         _register(typeof(TInterface), registration);
     }
 
-    public ScopeBind<TInterface> ToFactory<TConcrete>(Func<TConcrete> factory) where TConcrete : TInterface
+    public void ToFactory<TConcrete>(Func<TConcrete> factory) where TConcrete : TInterface
     {
         Func<object> objectFactory = () =>
         {
@@ -32,6 +32,14 @@ public class RegisterBind<TInterface> where TInterface : notnull
             return (object)val;
         };
 
-        return new ScopeBind<TInterface>(_register, null, objectFactory);
+        var registration = new Registration(
+            Scope.Transient,
+            typeof(TInterface),
+            typeof(TConcrete),
+            null,
+            objectFactory
+        );
+
+        _register(typeof(TInterface), registration);
     }
 }
