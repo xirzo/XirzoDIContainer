@@ -13,7 +13,23 @@ public class ContainerDi
             _registrations.Add(type, registration);
         };
 
-        return new RegisterBind<TInterface>(register);
+        return new RegisterBind<TInterface>(register, this);
+    }
+
+
+    public ScopeBind<TConcrete> BindType<TConcrete>() where TConcrete : class
+    {
+        if (typeof(TConcrete).IsInterface)
+        {
+            throw new ArgumentException($"BindType cannot be used with interfaces. Type {typeof(TConcrete).FullName}");
+        }
+
+        Action<Type, Registration> register = (type, registration) =>
+        {
+            _registrations.Add(type, registration);
+        };
+
+        return new ScopeBind<TConcrete>(register, null, this, null);
     }
 
     public TInterface Resolve<TInterface>()

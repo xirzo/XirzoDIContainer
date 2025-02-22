@@ -5,10 +5,17 @@ namespace XirzoDIContainer.Bind;
 public class RegisterBind<TInterface> where TInterface : notnull
 {
     private readonly Action<Type, Registration> _register;
+    private readonly ContainerDi _container;
 
-    public RegisterBind(Action<Type, Registration> register)
+    public RegisterBind(Action<Type, Registration> register, ContainerDi container)
     {
         _register = register;
+        _container = container;
+    }
+
+    public ScopeBind<TInterface> To<TConcrete>() where TConcrete : TInterface
+    {
+        return new ScopeBind<TInterface>(_register, null, _container, null);
     }
 
     public void ToInstance<TConcrete>(TConcrete instance) where TConcrete : TInterface
