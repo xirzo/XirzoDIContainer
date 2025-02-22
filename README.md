@@ -3,106 +3,118 @@
 ![C#](https://img.shields.io/badge/C%23-100%25-blue)
 [![Last Commit](https://img.shields.io/github/last-commit/xirzo/XirzoDIContainer)](https://github.com/xirzo/XirzoDIContainer/commits/main)
 
-Welcome to **XirzoDIContainer**! This is a lightweight Dependency Injection (DI) library designed to simplify the process of managing dependencies in your C# applications. 🚀
+Welcome to **XirzoDIContainer**! This is a lightweight Dependency Injection (DI) library designed to simplify dependency management in your C# applications. 🚀
 
 ## Features ✨
 
-- **Singleton Binding with Instance**: Bind a single instance that will always return the same instance. 🪄
-- **Singleton Binding with Factory**: Bind a factory method that will return the same instance every time it's resolved. 🔄
-- **Transient Binding**: Bind a factory method that will return a new instance every time it's resolved. 🆕
-- **Error Handling**: Provides clear error messages for issues like unregistered types or multiple singleton bindings. 🚨
+- **Type Binding**: Bind concrete types directly with `BindType<T>()` 🎯
+- **Interface Binding**: Map interfaces to implementations using `Bind<T>().To<TImplementation>()` 🔄
+- **Instance Binding**: Bind existing instances using `ToInstance()` 📦
+- **Factory Binding**: Create custom instantiation logic with `ToFactory()` 🏭
+- **Lifetime Management**:
+  - Singleton: One instance for all resolutions
+  - Transient: New instance per resolution
+- **Fluent API**: Intuitive and chainable configuration methods 🔗
 
 ## Getting Started 🌟
 
-Here’s a quick guide to get you started with XirzoDIContainer:
+### Basic Usage
 
-### 1. Define Your Services ✍️
+1. Create your container:
 
-Create interfaces and their implementations.
+```csharp
+var container = new ContainerDi();
+```
+
+2. Register your dependencies:
+
+#### Direct Type Binding
+
+```csharp
+// Singleton
+container.BindType<MyService>()
+    .AsSingleton();
+
+// Transient
+container.BindType<MyService>()
+    .AsTransient();
+```
+
+#### Interface to Implementation Binding
+
+```csharp
+// Singleton
+container.Bind<IMyService>()
+    .To<MyService>()
+    .AsSingleton();
+
+// Transient
+container.Bind<IMyService>()
+    .To<MyService>()
+    .AsTransient();
+```
+
+#### Instance Binding
+
+```csharp
+var myInstance = new MyService();
+container.Bind<IMyService>()
+    .ToInstance(myInstance);
+```
+
+#### Factory Binding
+
+```csharp
+container.Bind<IMyService>()
+    .ToFactory(() => new MyService());
+```
+
+### Resolving Dependencies
+
+```csharp
+// Resolve your service
+var service = container.Resolve<IMyService>();
+```
+
+## Best Practices 🎯
+
+1. **Singleton vs Transient**:
+   - Use `AsSingleton()` when you need the same instance throughout your application
+   - Use `AsTransient()` when you need a new instance each time
+
+2. **Instance Binding**:
+   - Use `ToInstance()` when you have pre-configured instances
+   - Note: You cannot bind multiple instances to the same type
+
+3. **Factory Binding**:
+   - Use `ToFactory()` when you need custom instantiation logic
+   - Factories always create new instances
+
+## Example Scenario 📝
 
 ```csharp
 public interface IGreetingService
 {
-    void Greet(string name);
+    void Greet();
 }
 
 public class GreetingService : IGreetingService
 {
-    public void Greet(string name)
+    public void Greet()
     {
-        Console.WriteLine($"Hello, {name}!");
+        Console.WriteLine("Hello!");
     }
 }
-```
 
-### 2. Use the DI Container 🛠️
-
-Register your services in the DI container.
-
-#### Singleton with Instance
-
-```csharp
+// Setup container
 var container = new ContainerDi();
-var instance = new GreetingService();
 
+// Register as singleton
 container.Bind<IGreetingService>()
-    .Instance(instance).AsSingleton();
-
-// Resolve the service
-var greetingService = container.Resolve<IGreetingService>().Value;
-greetingService.Greet("World");
-```
-
-#### Singleton with Factory
-
-```csharp
-var container = new ContainerDi();
-
-container.Bind<IGreetingService>()
-    .Factory(() => new GreetingService()).AsSingleton();
-
-// Resolve the service
-var greetingService1 = container.Resolve<IGreetingService>().Value;
-var greetingService2 = container.Resolve<IGreetingService>().Value;
-
-// Both instances should be the same
-Console.WriteLine(ReferenceEquals(greetingService1, greetingService2)); // True
-```
-
-#### Transient
-
-```csharp
-var container = new ContainerDi();
-
-container.Bind<IGreetingService>()
-    .Factory(() => new GreetingService()).AsTransient();
-
-// Resolve the service
-var greetingService1 = container.Resolve<IGreetingService>().Value;
-var greetingService2 = container.Resolve<IGreetingService>().Value;
-
-// Both instances should be different
-Console.WriteLine(ReferenceEquals(greetingService1, greetingService2)); // False
-```
-
-### Error Handling 🎯
-
-Handle errors for unregistered types or other issues using the result object.
-
-```csharp
-var container = new ContainerDi();
-
-container.Bind<IMock>()
-    .Factory(() => new Mock())
+    .To<GreetingService>()
     .AsSingleton();
 
-Result<IMock> resolveResult = container.Resolve<IMock>();
-
-if (resolveResult.IsSuccess) {
-    var mock = resolveResult.Value;
-    // Use the resolved instance
-    mock.Foo();
-} else {
-    Console.WriteLine("Failed to resolve IMock: " + resolveResult.ErrorMessage);
-}
+// Resolve and use
+var service = container.Resolve<IGreetingService>();
+service.Greet();
 ```
