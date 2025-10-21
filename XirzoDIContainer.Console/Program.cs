@@ -1,49 +1,24 @@
 ﻿using XirzoDIContainer.Container;
 
-namespace XirzoDIContainer.Console
+var container = new ContainerDi();
+
+container.Bind<IGreetingService>()
+    .To<GreetingService>()
+    .AsSingleton();
+
+var service = container.Resolve<IGreetingService>();
+
+service.Greet();
+
+public interface IGreetingService
 {
-    internal interface ILogger
+    void Greet();
+}
+
+public class GreetingService : IGreetingService
+{
+    public void Greet()
     {
-        void Log(string text);
-    }
-
-    internal class Logger : ILogger
-    {
-        public void Log(string text)
-        {
-            System.Console.WriteLine("Log: " + text);
-        }
-    }
-
-    internal class Game
-    {
-        private readonly ILogger _logger;
-
-        public Game(ILogger logger)
-        {
-            _logger = logger;
-        }
-
-        public void Run()
-        {
-            _logger.Log("Game running");
-        }
-    }
-
-    internal class Program
-    {
-        private static void Main()
-        {
-            var container = new ContainerDi();
-
-            container.Bind<ILogger>()
-                .ToFactory(() => new Logger());
-
-            container.BindType<Game>().AsSingleton();
-
-            var game = container.Resolve<Game>();
-
-            game.Run();
-        }
+        Console.WriteLine("Hello!");
     }
 }
