@@ -7,7 +7,7 @@
         <PackageProjectUrl>https://github.com/xirzo/XirzoDIContainer</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile> 
-        <Version>1.1.1</Version>
+        <Version>1.1.2</Version>
         <Author>Xirzo</Author>
         <Product>XirzoDIContainer</Product>
         <RepositoryUrl>https://github.com/xirzo/XirzoDIContainer</RepositoryUrl>
